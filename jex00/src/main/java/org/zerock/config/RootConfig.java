@@ -4,6 +4,7 @@ import javax.sql.DataSource;
 
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -13,13 +14,16 @@ import com.zaxxer.hikari.HikariDataSource;
 
 @Configuration
 @ComponentScan(basePackages= {"org.zerock.sample"})
+@MapperScan(basePackages= {"org.zerock.mapper"})
 public class RootConfig {
 
 	@Bean
 	public DataSource dataSource() {
 	HikariConfig hikariconfig = new HikariConfig();
-	hikariconfig.setDriverClassName("oracle.jdbc.driver.OracleDriver");
-	hikariconfig.setJdbcUrl("jdbc:oracle:thin:@localhost:1521:orcl");
+	//hikariconfig.setDriverClassName("oracle.jdbc.driver.OracleDriver");
+	//hikariconfig.setJdbcUrl("jdbc:oracle:thin:@localhost:1521:orcl");
+	hikariconfig.setDriverClassName("net.sf.log4jdbc.sql.jdbcapi.DriverSpy");
+	hikariconfig.setJdbcUrl("jdbc:log4jdbc:oracle:thin:@localhost:1521:orcl");
 	hikariconfig.setUsername("Heesoo");
 	hikariconfig.setPassword("1004");
 	
