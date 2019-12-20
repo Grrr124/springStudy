@@ -21,8 +21,20 @@
 		<beans:property name="suffix" value=".jsp" />
 	</beans:bean>
 	
-	<context:component-scan base-package="org.zerock.controller" />
-	
+	<context:component-scan base-package="org.zerock.controller" ></context:component-scan>
+	<context:component-scan base-package="org.zerock.exception"></context:component-scan>
+	<beans:bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<!-- 한글 깨짐 처리 -->
+		<beans:property name="defaultEncoding" value="utf-8"></beans:property>
+		<!-- 1024 * 1024 * 10 bytes 10MB Request로 전달될 수 있는 최대의 크기를 의미-->
+		<beans:property name="maxUploadSize" value="104857560"></beans:property>
+		<!-- 1024 * 1024 * 2 bytes 2MB 하나의 파일 최대 크기-->
+		<beans:property name="maxUploadSizePerFile" value="2097152"></beans:property>
+		<!-- maxInMemorySize에서 크기 이상의 데이터는 이곳에서 임시파일의 형태로 저장 -->
+		<beans:property name="uploadTempDir" value="file:/C:/upload/tmp"></beans:property>
+		<!-- 메모리상에서 유지하는 최대의 크기를 의미 -->
+		<beans:property name="maxInMemorySize" value="10485756"></beans:property>
+	</beans:bean>
 	
 	
 </beans:beans>
