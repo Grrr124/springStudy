@@ -25,6 +25,7 @@
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
+                        	<form role="form" action="/board/modify" method="post">
                            		<div class="form-group">
                            			<label>Bno</label> <input class="form-control" name="bno"  
                            																						 value='<c:out value="${board.bno }"/>' 
@@ -34,13 +35,12 @@
                            		<div class="form-group">
                            			<label>Title</label>
                            			<input class="form-control"  name='title'
-                           															value='<c:out value="${board.title }" />'
-                           															readonly="readonly">
+                           															value='<c:out value="${board.title }" />'>
                            		</div>
                            		
                            		<div class="form-group">
                            			<label>Text area</label> 
-                           			<textarea rows="3" class="form-control" name='content' readonly="readonly"><c:out value="${board.content }"/></textarea>
+                           			<textarea rows="3" class="form-control" name='content' ><c:out value="${board.content }"/></textarea>
                            		</div>
                            		
                            		<div class="form-group">
@@ -48,12 +48,25 @@
                            																							 value='<c:out value="${board.writer }" />' 
                            																							 readonly="readonly">
                            		</div>
-                           		<button data-oper='modify' 
-                           		class="btn btn-default" 
-                           		onclick="location.href='/board/modify?bno=<c:out value="${board.bno }"/>'">Modify</button>
-                           		<button data-oper='list' 
-                           		class="btn btn-info"
-                           		onclick="location.href='/board/list'">List</button>
+                           		
+                           		<div class="form-group">
+                           			<label>RegDate</label>
+                           			<input class="form-control" name='regDate' value='<fmt:formatDate value="${board.regdate }" 
+                           																					 pattern="yyyy/MM/dd" />' 
+                           																					 readonly="readonly">
+                           		</div>
+                           		
+                           		<div class="form-group">
+                           			<label>Update Date</label>
+                           			<input class="form-control" name='updateDate' value='<fmt:formatDate value="${board.updateDate }" 
+                           																					 pattern="yyyy/MM/dd" />' 
+                           																					 readonly="readonly">
+                           		</div>
+                           		<button type="submit" data-oper='modify' class="btn btn-default" >Modify</button>
+                           		<button type="submit" data-oper='remove' class="btn btn-danger" >Remove</button>
+                           		<button type="submit" data-oper='list' class="btn btn-info">List</button>
+                           		
+                           		</form>
                         <!-- /.panel-body -->
                     </div>
                     <!-- /.panel -->
@@ -62,6 +75,35 @@
              </div>
             </div>
             <!-- /.row -->
-<%@include file="../includes/footer.jsp" %>            
+<%@include file="../includes/footer.jsp" %>       
+
+<script type="text/javascript">
+$(document).ready(function() {
+
+	var formObj = $("form");
+
+	$('button').on("click", function(e) {
+
+		//고유 동작을 중단시킴
+		e.preventDefault();
+
+		var operation = $(this).data("oper");
+
+		console.log(operation);
+		//remove 버튼을 클릭하면 form 태그의 action 값이 /borad/remove가 되고 데이터들이 전송 된다.
+		if(operation === 'remove') {
+
+			formObj.attr("action", "/board/remove");	
+
+			}else if(operation === 'list'){
+				//move to list
+				self.location="/board/list";
+				return;
+			}
+			formObj.submit();	
+	});
+});
+
+</script>     
 </body>
 </html>

@@ -42,10 +42,11 @@ public class BoardController {
 	
 	//@RequestParam 값의 명시적 처리..(파라미터이름과 변수이름을 기준으로 동작해서 생략해도 관계없음)
 	//화면 쪽으로 해당 번호의 게시물을 전달해야 하므로 Model을 파라미터로 지정
-	@GetMapping("/get")
+	//@GetMapping @PostMapping에서는 URL을 배열로 처리할 수 있어서 하나의 메서드로 여러 URL 처리 가능
+	@GetMapping({"/get","/modify"})
 	public void get(@RequestParam("bno") Long bno, Model model) {
 		
-		log.info("/get");
+		log.info("/get or modify");
 		model.addAttribute("board", service.get(bno));
 	}
 	
