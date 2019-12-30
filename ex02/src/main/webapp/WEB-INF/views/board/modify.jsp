@@ -97,8 +97,11 @@ $(document).ready(function() {
 
 			}else if(operation === 'list'){
 				//move to list
-				self.location="/board/list";
-				return;
+				//같은 결과지만 board/list는 아무런 파라미터가 필요없기 때문에 empty로 form의 내용을 비워주고 submit을 진행함 
+/* 			self.location="/board/list";
+				return; */
+				formObj.attr("action", "/board/list").attr("method", "get");
+				formObj.empty();
 			}
 			formObj.submit();	
 	});

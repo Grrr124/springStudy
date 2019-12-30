@@ -1,3 +1,5 @@
+
+---------------------------------------------------------------------------------------
 create sequence seq_board;
 
 create table tbl_board (
@@ -15,3 +17,53 @@ create table tbl_board (
     values (seq_board.nextval, '테스트 제목', '테스트 내용', 'user00');
     
     commit;
+    
+    
+    
+    
+    
+    
+---------------------------------------------------------------------------------------
+--재귀 복사를 통해서 데이터의 개수를 늘린다. 반복해서 여러 번 실행
+insert into tbl_board (bno, title, content, writer) (select seq_board.nextval, title, content, writer from tbl_board);
+select count(*) from tbl_board;
+commit;
+
+--sort 안좋은 예
+select * from tbl_board order by bno + 1 desc;
+
+--(HINT)인덱스를 이용한 스캔 방식.. sort과정을 생략함
+select /*+ INDEX_DESC(tbl_board pk_board) */ * from tbl_board where bno > 0;
+
+--(HINT)인덱스가 아닌 sort 방식으로 정렬 처리하고 풀스캔
+select /*+ FULL(tbl_board) */ * from tbl_board order by bno desc;
+
+--(HINT)인덱스를 이용한 ASC 처리
+select /* INDEX_ASC(tbl_board pk_board) */ * from tbl_board where bno > 0;
+
+--rownum 예제
+select rownum rn, bno, title from tbl_board;
+
+--rownum 이 구문과 비교하면 데이터를 가져올 때 적용되는 것, 이 후에 정렬되는 과정에서 ROWNUM은 변경되지 않아.. 정렬은 나중에 처리됨
+select /*+ FULL(tbl_board) */ rownum rn, bno, title from tbl_board where bno > 0 order by bno;
+
+--rownum 값이 인덱스 asc의 의해서 가장 먼저 찾은 데이터부터 정렬 처리 되어짐
+select /*+ INDEX_ASC(tbl_board pk_board) */ rownum rn, bno, title, content from tbl_board;
+
+--rownum 값이 인덱스 DESC의 의해서 뒷 순서대로 정렬 처리 되어짐.. rownum은 데이터에 접근하는 순서로 처리함
+select /*+ INDEX_DESC(tbl_board pk_board) */ rownum rn, bno, title, content from tbl_board where bno > 0;
+
+--한 페이지당 10개의 데이터를 출력한다고 가정했을때 where 구문에 다음 추가
+select /*+ INDEX_DESC(tbl_board pk_board) */ rownum rn, bno, title, content from tbl_board where rownum <= 10;
+
+--이렇게 처리하면 10보다 크고 20보다 작거나 같은 데이터를 가져와서 2페이지 데이터를 구할 것 같지만?? 불가능
+--rownum은 항상 값이 1이 처리 되어서 데이터를 가져오고 찾는 과정에서 where 조건이 무효화 되어짐
+select /*+ INDEX_DESC(tbl_board pk_board) */ rownum rn, bno, title, content from tbl_board where rownum > 10 and rownum <= 20;
+
+--rownum 값을 1로 예상해서 이렇게 처리해주자
+select /*+ INDEX_DESC(tbl_board pk_board) */ rownum rn, bno, title, content from tbl_board where rownum <= 20;
+
+--2페이지 분량의 데이터를 가져왔지만 같이 출력이 되어진다. 이럴때 인라인뷰 처리를 해보자
+--SELECT문 안쪽 FROM에 다시 SELECT문으로 처리, 인라인 뷰는 어떤 결과를 구하는 SELECT 문이 있고 그 결과를 이용해 SELECT 하는 방식
+select bno, title, content from (select /*+ INDEX_DESC(tbl_board pk_board) */ rownum rn, bno, title, content from tbl_board where rownum <= 20) where rn > 10;
+    
