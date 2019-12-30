@@ -36,64 +36,73 @@ public class BoardControllerTests {
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(ctx).build();
 	}
 	
-	//get 방식의 호출후 getList()에서 반환된 결과를 이용해서 Model에 데이터 확인
-	@Test
-	public void testLsit() throws Exception {
-		log.info(mockMvc.perform(MockMvcRequestBuilders.get("/board/list"))
-					 .andReturn()
-					 .getModelAndView()
-					 .getModelMap());
-	}
+//	//get 방식의 호출후 getList()에서 반환된 결과를 이용해서 Model에 데이터 확인
+//	@Test
+//	public void testLsit() throws Exception {
+//		log.info(mockMvc.perform(MockMvcRequestBuilders.get("/board/list"))
+//					 .andReturn()
+//					 .getModelAndView()
+//					 .getModelMap());
+//	}
+//	
+//	@Test
+//	public void testRegister() throws Exception {
+//		
+//		String resultPage = mockMvc.perform(MockMvcRequestBuilders.post("/board/register")
+//										.param("title", "테스트 새글 제목")
+//										.param("content", "테스트 새글 내용")
+//										.param("writer", "user00")
+//									).andReturn().getModelAndView().getViewName();
+//		
+//		log.info(resultPage);
+//	}
+//	
+//	//특정 게시물을 죄할 때 반드시 bno라는 파라미터가 필요하므로 param()을 통해서 추가 실행
+//	@Test
+//	public void tetGet() throws Exception {
+//	
+//		log.info(mockMvc.perform(MockMvcRequestBuilders
+//				    .get("/board/get")
+//					.param("bno", "2"))
+//					.andReturn()
+//					.getModelAndView()
+//					.getModelMap());
+//	}
+//	
+//	@Test
+//	public void testModify() throws Exception {
+//		
+//		String resultPage = mockMvc.perform(MockMvcRequestBuilders.post("/board/modify")
+//										.param("bno", "1")
+//										.param("title", "수정된 테스트 새글 제목")
+//										.param("content", "수정된 테스트 새글 내용")
+//										.param("writer", "user00"))
+//										.andReturn()
+//										.getModelAndView()
+//										.getViewName();
+//		
+//		log.info(resultPage);
+//	}
+//	
+//	//MockMvc를 이용해서 파라미터를 전달할 때에는 문자열로만 처리해야 함.
+//	@Test
+//	public void testRemove() throws Exception {
+//		//삭제전 데이터베이스에 게시물 번호 확인할 것
+//		String resultPage = mockMvc.perform(MockMvcRequestBuilders.post("/board/remove")
+//										.param("bno", "6"))
+//										.andReturn()
+//										.getModelAndView()
+//										.getViewName();
+//		
+//		log.info(resultPage);
+//	}
 	
 	@Test
-	public void testRegister() throws Exception {
+	public void testListPaging() throws Exception {
 		
-		String resultPage = mockMvc.perform(MockMvcRequestBuilders.post("/board/register")
-										.param("title", "테스트 새글 제목")
-										.param("content", "테스트 새글 내용")
-										.param("writer", "user00")
-									).andReturn().getModelAndView().getViewName();
-		
-		log.info(resultPage);
-	}
-	
-	//특정 게시물을 죄할 때 반드시 bno라는 파라미터가 필요하므로 param()을 통해서 추가 실행
-	@Test
-	public void tetGet() throws Exception {
-	
-		log.info(mockMvc.perform(MockMvcRequestBuilders
-				    .get("/board/get")
-					.param("bno", "2"))
-					.andReturn()
-					.getModelAndView()
-					.getModelMap());
-	}
-	
-	@Test
-	public void testModify() throws Exception {
-		
-		String resultPage = mockMvc.perform(MockMvcRequestBuilders.post("/board/modify")
-										.param("bno", "1")
-										.param("title", "수정된 테스트 새글 제목")
-										.param("content", "수정된 테스트 새글 내용")
-										.param("writer", "user00"))
-										.andReturn()
-										.getModelAndView()
-										.getViewName();
-		
-		log.info(resultPage);
-	}
-	
-	//MockMvc를 이용해서 파라미터를 전달할 때에는 문자열로만 처리해야 함.
-	@Test
-	public void testRemove() throws Exception {
-		//삭제전 데이터베이스에 게시물 번호 확인할 것
-		String resultPage = mockMvc.perform(MockMvcRequestBuilders.post("/board/remove")
-										.param("bno", "6"))
-										.andReturn()
-										.getModelAndView()
-										.getViewName();
-		
-		log.info(resultPage);
+		log.info(mockMvc.perform(MockMvcRequestBuilders.get("/board/list")
+				.param("pageNum", "2")
+				.param("amount", "50"))
+				.andReturn().getModelAndView().getModelMap());
 	}
 }
