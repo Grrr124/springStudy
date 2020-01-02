@@ -40,7 +40,9 @@
                                     	<td><c:out value="${board.bno }" /></td>
                                     	<!-- 만일 새창을 통해 보고 싶으면 target='_blank'를 지정, 
                                     	a태그와 form 태그에는 target 속성을 정할 수 있는데 '_blank'는 새로운 창에서 처리 된다. -->
-                                    	<td><a href='/board/get?bno=<c:out value="${board.bno}" />'>
+<%--                                <td><a href='/board/get?bno=<c:out value="${board.bno}" />'>
+                                    	<c:out value="${board.title }" /></a></td> --%>
+                                    	<td><a class='move' href='<c:out value="${board.bno}" />'>
                                     	<c:out value="${board.title }" /></a></td>
                                     	<td><c:out value="${board.writer }" /></td>
                                     	<td><fmt:formatDate pattern="yyyy-MM-dd" value="${board.regdate }"/></td>
@@ -75,16 +77,26 @@
                            		<ul class="pagination">
                            		
                            			<c:if test="${pageMaker.prev }">
-                           				<li class="paginate_button previous"><a href="#">Previous</a></li>
+                           				<li class="paginate_button previous">
+                           				<a href="${pageMaker.startPage -1}">Previous</a>
+                           				</li>
                            			</c:if>
-                           			
                            			<c:forEach var="num" begin="${pageMaker.startPage }" end="${pageMaker.endPage }">
-                           				<li class="paginate_button" ><a href="#">${num}</a></li>
+                           				<li class="paginate_button ${pageMaker.cri.pageNum == num ? 'active':''}" >
+                           				<a href="${num}">${num}</a>
+                           				</li>
                            			</c:forEach>
                            			
-                           			<c:if test="${pageMaker.next }"></c:if>
-                           			<li class="paginate_button next"><a href="#">Next</a></li>
+                           			<c:if test="${pageMaker.next == true}">
+                           			<li class="paginate_button next"><a href="${pageMaker.endPage +1 }">Next</a></li>
+                           			</c:if>
+                        			<c:if test="${pageMaker.next != true}"  />
                            		</ul>
+                           		
+                           		<form action="/board/list" id='actionForm' method="get">
+                           			<input type='hidden' name='pageNum' value='${pageMaker.cri.pageNum}'>
+                           			<input type='hidden' name='amount' value='${pageMaker.cri.amount}'>
+                           		</form>
                            </div>
                         <!-- /.panel-body -->
                     </div>
@@ -137,7 +149,29 @@ $(document).ready(function(){
 		}
 	/* 게시물의 등록페이지로 이동하는 함수 */
 	$("#regBtn").on("click", function(){
+
 		self.location = "/board/register";
+
+		});
+
+	var actionForm = $("#actionForm");
+
+	$(".paginate_button a").on("click", function(e) {
+
+		e.preventDefault();
+
+		console.log('click');
+
+		actionForm.find("input[name='pageNum']").val($(this).attr("href"));
+		actionForm.submit();
+		});
+
+	$(".move").on("click", function(e){
+
+		e.preventDefault();
+		actionForm.append("<input type='hidden' name='bno' value='"+$(this).attr("href")+"'>");
+		actionForm.attr("action", "/board/get");
+		actionForm.submit();
 		});
 });
 </script>

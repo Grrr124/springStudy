@@ -62,6 +62,10 @@
                            																					 pattern="yyyy/MM/dd" />' 
                            																					 readonly="readonly">
                            		</div>
+                           		
+                           		<input type='hidden' name="pageNum" value='<c:out value="${cri.pageNum}" />'>
+                           		<input type='hidden' name="amount" value='<c:out value="${cri.amount}" />'>
+                           		
                            		<button type="submit" data-oper='modify' class="btn btn-default" >Modify</button>
                            		<button type="submit" data-oper='remove' class="btn btn-danger" >Remove</button>
                            		<button type="submit" data-oper='list' class="btn btn-info">List</button>
@@ -91,6 +95,8 @@ $(document).ready(function() {
 
 		console.log(operation);
 		//remove 버튼을 클릭하면 form 태그의 action 값이 /borad/remove가 되고 데이터들이 전송 된다.
+		//list 버튼을 클릭하면 form 태그에서 필요한 부분만 잠시 복사(clone)해서 보관해 두고, form 태그 내의 모든 내용을 지워버린다.
+		//이후에 필요한 태그들만 append하여 사용한다.
 		if(operation === 'remove') {
 
 			formObj.attr("action", "/board/remove");	
@@ -99,9 +105,15 @@ $(document).ready(function() {
 				//move to list
 				//같은 결과지만 board/list는 아무런 파라미터가 필요없기 때문에 empty로 form의 내용을 비워주고 submit을 진행함 
 /* 			self.location="/board/list";
-				return; */
+				return;
+				*/
 				formObj.attr("action", "/board/list").attr("method", "get");
+				var pageNumTag = $("input[name='pageNum']").clone();
+				var amountTag = $("input[name='amount']").clone();
+
 				formObj.empty();
+				formObj.append(pageNumTag);
+				formObj.append(amountTag);
 			}
 			formObj.submit();	
 	});
