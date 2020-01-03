@@ -64,13 +64,25 @@ public class BoardMapperTests {
 	 * int count = mapper.update(board); log.info("UPDATE COUNT: " + count); }
 	 */
 	
+//	@Test
+//	public void testPaging() {
+//		
+//		Criteria cri = new Criteria();
+//		//10개씩 3페이지
+//		cri.setPageNum(2);
+//		cri.setAmount(10);
+//		List<BoardVO> list = mapper.getListWithPaging(cri);
+//		
+//		list.forEach(board -> log.info(board.getBno()));
+//	}
+	
+	//다중항목 동적 SQL 테스트.. T,C,W의 각 제목별로 SQL 변경
 	@Test
-	public void testPaging() {
-		
+	public void testSearch() {
 		Criteria cri = new Criteria();
-		//10개씩 3페이지
-		cri.setPageNum(2);
-		cri.setAmount(10);
+		cri.setKeyword("새로");
+		cri.setType("TCW");
+		
 		List<BoardVO> list = mapper.getListWithPaging(cri);
 		
 		list.forEach(board -> log.info(board.getBno()));
