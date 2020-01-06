@@ -74,10 +74,10 @@ prefix 속성에 설정한 문자열 ( 을 넣어주고 surfix에도 문자열 )
 						title like '%'||#{keyword}||'%'
 					</when>
 					<when test="type == 'C'.toString()">
-						title like '%'||#{keyword}||'%'
+						content like '%'||#{keyword}||'%'
 					</when>
 					<when test="type == 'W'.toString()">
-						title like '%'||#{keyword}||'%'
+						writer like '%'||#{keyword}||'%'
 					</when>
 				</choose>
 			</trim>
@@ -87,26 +87,24 @@ prefix 속성에 설정한 문자열 ( 을 넣어주고 surfix에도 문자열 )
 
 <select id="getListWithPaging" resultType="org.zerock.domain.BoardVO">
 <![CDATA[
-	select 
-		bno
-		,title
-		,content
-		,writer
-		,regdate
-		,updatedate
-	from
-		(
-		select /*+INDEX_DESC(tbl_board, pk_board) */ 
-			rownum rn
-			,bno
-			,title
-			,content
-			,writer
-			,regdate
-			,updatedate
-		from
-			tbl_board
-		where
+	select bno
+			, title
+			, content
+			, writer
+			, regdate
+			, updatedate
+	from (
+				select /*+INDEX_DESC(tbl_board, pk_board) */ 
+				rownum rn
+							 , bno
+							 , title
+							 , content
+							 , writer
+							 , regdate
+							 , updatedate
+				from
+					tbl_board
+				where
 ]]>
 
 <include refid="criteria"></include>

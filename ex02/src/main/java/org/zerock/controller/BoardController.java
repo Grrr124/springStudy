@@ -78,8 +78,10 @@ public class BoardController {
 		}
 		rttr.addAttribute("pageNum", cri.getPageNum());
 		rttr.addAttribute("amount", cri.getAmount());
+		rttr.addAttribute("type", cri.getType());
+		rttr.addAttribute("keyword", cri.getKeyword());
 		
-		return "redirect:/board/list";
+		return "redirect:/board/list"; /* + cri.getListLink(); UriComponentsBuilder활용하면 번거롭게 파라미터를 넣어 줄 필요가 없다.*/
 	}
 	
 	//삭제후 페이지의 이동이 필요하므로 RedirectAttributes를 파라미터로 사용하고 redirect를 통해서 삭제 처리 후 목록 페이지로 이동
@@ -92,8 +94,10 @@ public class BoardController {
 		}
 		rttr.addAttribute("pageNum", cri.getPageNum());
 		rttr.addAttribute("amount", cri.getAmount());
+		rttr.addAttribute("type", cri.getType());
+		rttr.addAttribute("keyword", cri.getKeyword());
 		
-		return "redirect:/board/list";
+		return "redirect:/board/list"; /* + cri.getListLink(); */
 	}
 	
 	@GetMapping("/register")
