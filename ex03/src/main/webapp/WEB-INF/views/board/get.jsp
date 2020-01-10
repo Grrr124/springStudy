@@ -75,8 +75,37 @@
             </div>
             <!-- /.row -->
 <%@include file="../includes/footer.jsp" %>
+<script type="text/javascript" src="/resources/js/reply.js"></script>
+<script type="text/javascript">
+//http://localhost:8090/board/get?bno=1
+$(document).ready(function(){
+
+	console.log("=================");
+	console.log("JS TEST")
+
+	var bnoValue = '<c:out value="${board.bno}"/>';
+
+	replyService.getList( 
+		{bno:bnoValue, page:1} //function getList('param', callback, error)에서 param값의 해당하는 부분
+		, 
+		function(list) { //callback의 해당하는 부분
+			for(var i = 0, len = list.length || 0; i < len; i++) {
+				console.log(list[i]);
+			}
+		});
+	
+	//for replyService add test
+	replyService.add( 
+		{reply:"JS TEST", replyer:"tester", bno:bnoValue} //function add(reply, callback, error)에서 reply의 해당하는 부분
+		,
+		function(result){ //callback의 해당하는 부분
+			alert("RESULT: " + result);
+		});
+});
+</script>
 
 <script type="text/javascript">
+
 $(document).ready(function() {
 
 	var operForm = $("#operForm");
