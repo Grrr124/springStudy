@@ -76,7 +76,7 @@ public class ReplyController {
 	}
 	
 	//댓글 수정은 PUT 방식이나 PATCH 방식으로 처리한다.
-	//실제 수정되는 데이터는 JSON 포맷이므로 @RequestBody로 처리하는데 이것으로 처리하는 데이터는
+	//실제 수정되는 데이터는 JSON 포맷이므로 @RequestBody로 처리하는데 @RequestBody로 처리하는 데이터는
 	//일반 파라미터나 @PathVariable 파라미터를 처리할 수 없기 때문에 직접 처리해 줘야 한다.
 	@RequestMapping(method = { RequestMethod.PUT, RequestMethod.PATCH }
 													  ,value = "/{rno}"
