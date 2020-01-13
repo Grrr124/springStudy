@@ -77,8 +77,13 @@
        		<div class='row'>
        			<div class="col-lg-12">
        				<div class="panel panel-default">
-       					<div class="panel-heading">
+ <!--       			<div class="panel-heading">
        						<i class="fa fa-comments fa-fw"></i> Reply
+       					</div> -->
+       					
+       					 <div class="panel-heading">
+       						<i class="fa fa-comments fa-fw"></i> Reply
+       						<button id='addReplyBtn' class='btn btn-primary btn-xs pull-right'>New Reply</button>
        					</div>
        					
        					<div class="panel-body">
@@ -98,6 +103,41 @@
        			</div>
        		</div>
 <%@include file="../includes/footer.jsp" %>
+
+ <!-- Modal -->
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title" id="myModalLabel">REPLY Modal</h4>
+                        </div>
+                        <div class="modal-body">
+                             <div class="form-group">
+                             	<label>Reply</label>
+                             	<input class="form-control" name='reply' value='New Reply!!!!'>
+                             </div>
+                             <div class="form-group">
+                             	<label>Replyer</label>
+                             	<input class="form-control" name='replyer' value='replyer'>
+                             </div>
+                             <div class="form-group">
+                             	<label>Reply Date</label>
+                             	<input class="form-control" name='replyDate' value=''>
+                             </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="modalModBtn"  type="button" class="btn btn-warning" >Modify</button>
+                            <button id="modalRemoveBtn"  type="button" class="btn btn-danger">Remove</button>
+                            <button id="modalRegisterBtn"  type="button" class="btn btn-primary">Register</button>
+                            <button id="modalCloseBtn"  type="button" class="btn btn-default">Close</button>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+         <!-- /.modal -->
 <script type="text/javascript" src="/resources/js/reply.js"></script>
 <script type="text/javascript">
 //http://localhost:8090/board/get?bno=1
@@ -126,15 +166,34 @@ $(document).ready(function(){
 		 		for(var i = 0, len = list.length || 0; i < len; i++) { 
 					str +="<li class='left clearfix' data-rno='"+list[i].rno+"'>";
 					str +="<div><div class='header'><strong class='primary-font'>"+list[i].replyer+"</strong>";
-					str +="<small class='pull-right text-muted'>"+list[i].replyDate+"</small></div>";
+					str +="<small class='pull-right text-muted'>"+replyService.displayTime(list[i].replyDate)+"</small></div>";
 					str +="<p>"+list[i].reply+"</p></div></li>"
 				}
 
-			replyUL.html(str);
+			replyUL.html(str)
 			
 			}); //end function
 		}	//end showList 
 
+		var modal = $(".modal");
+		var modalInputReply = modal.find("input[name='reply']");
+		var modalInputReplyer = modal.find("input[name='replyer']");
+		var modalInputReplyDate = modal.find("input[name='replyDate']");
+
+		var modalModBtn = $("#modalModBtn");
+		var modalRemoveBtn = $("#modalRemoveBtn");
+		var modalRegisterBtn = $("#modalRegisterBtn");
+
+		$("#addReplyBtn").on("click", function(e){
+
+			modal.find("input").val("");
+			modalInputReplyDate.closest("div").hide();
+			modal.find("button[id !='modalCloseBtn']").hide();
+
+			modalRegisterBtn.show();
+
+			$(".modal").modal("show");
+			});
 /* 	replyService.getList( 
 		{bno:bnoValue, page:1} //function getList('param', callback, error)에서 param값의 해당하는 부분
 		, 
@@ -142,15 +201,15 @@ $(document).ready(function(){
 			for(var i = 0, len = list.length || 0; i < len; i++) {
 				console.log(list[i]);
 			}
-		});
+		}); */
 	
 	//for replyService add test
-	replyService.add( 
+/*  	replyService.add( 
 		{reply:"JS TEST", replyer:"tester", bno:bnoValue} //function add(reply, callback, error)에서 reply의 해당하는 부분
 		,
 		function(result){ //callback의 해당하는 부분
 			alert("RESULT: " + result);
-		}); */
+		});   */
 
 /* 	replyService.remove(12, function(count){
 		console.log(count);
@@ -170,9 +229,9 @@ $(document).ready(function(){
 			alert("수정 완료...");
 		}); */
 
-	replyService.get(10, function(data){
+/* 	replyService.get(10, function(data){
 		console.log(data);
-		});
+		}); */
 	
 });
 </script>
