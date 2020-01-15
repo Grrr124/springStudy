@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.zerock.domain.Criteria;
+import org.zerock.domain.ReplyPageDTO;
 import org.zerock.domain.ReplyVO;
 import org.zerock.service.ReplyService;
 
@@ -43,17 +44,22 @@ public class ReplyController {
 				: new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	//리스트
+	//ReplyPageDTO 객체를 JSON으로 전송하게 되므로, 특정 게시물의 댓글 목록을 조회하면
+	//replyCnt와 list라는 이름의 속성을 가지는 JSON 문자열이 전송
 	@GetMapping(value = "/pages/{bno}/{page}", produces = {MediaType.APPLICATION_XML_VALUE
 							   																	  ,MediaType.APPLICATION_JSON_UTF8_VALUE})
-	public ResponseEntity<List<ReplyVO>> getList(
+	public ResponseEntity<ReplyPageDTO> getList( //<List<ReplyVO>> 
 			@PathVariable("page") int page
 		   ,@PathVariable("bno") Long bno) {
 		
-		log.info("getList................");
 		Criteria cri = new Criteria(page,10);
-		log.info(cri);
 		
-		return new ResponseEntity<>(service.getList(cri, bno), HttpStatus.OK);
+		log.info("get Reply List bno : " + bno);
+		log.info("cri:" + cri);
+		
+		return new ResponseEntity<>(service.getListPage(cri, bno), HttpStatus.OK);
+		
+//		return new ResponseEntity<>(service.getList(cri, bno), HttpStatus.OK);
 	}
 	//조회
 	@GetMapping(value = "/{rno}", produces = { MediaType.APPLICATION_XML_VALUE
@@ -93,4 +99,6 @@ public class ReplyController {
 				? new ResponseEntity<>("success", HttpStatus.OK)
 				:  new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
+	
+	
 }

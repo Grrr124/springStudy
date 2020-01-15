@@ -183,16 +183,92 @@ $(document).ready(function(){
 		var modalModBtn = $("#modalModBtn");
 		var modalRemoveBtn = $("#modalRemoveBtn");
 		var modalRegisterBtn = $("#modalRegisterBtn");
-
+		var modalCloseBtn = $("#modalCloseBtn");
 		$("#addReplyBtn").on("click", function(e){
 
+			//modal안 input을 찾아서 value값의 ""을 부여함
 			modal.find("input").val("");
+			//replyDate div를 숨김
 			modalInputReplyDate.closest("div").hide();
+			//input id가 close가 아닐시 버튼을 숨김
 			modal.find("button[id !='modalCloseBtn']").hide();
-
+			//다시 Register 보여줌
 			modalRegisterBtn.show();
 
+			//modal의 id를 가진 modal을 불러오는데 옵션으로 show의 의미는 초기화할 때 모달을 보여준다.
 			$(".modal").modal("show");
+
+			});
+
+		modalRegisterBtn.on("click", function(e){
+
+			var reply = {
+						reply: modalInputReply.val(),
+						replyer:modalInputReplyer.val(),
+						bno:bnoValue
+					};
+			//modalInput의 내용들을 함수 add(reply객체에 담아서 ajax로 전송해버린다. result는 callback)
+			replyService.add(reply, function(result){
+				alert(result);
+
+			//modal창을 닫고 showList로 다시 리스트를 뿌려준다.
+				modal.find("input").val("");
+				modal.modal("hide");
+				showList(1);
+				});
+			}); //end modalRegisterBtn
+
+		//ul태그의 chat 클래스를 이용해서 이벤트를 걸고 실제 이벤트의 대상인 li를 태그가 되도록 세팅
+		//data-rno='"+list[i].rno+"'에 담긴 rno를 jQuery의 .data를 통해서 저장된 데이터를 가져온다. 
+		//(key)값이 없으면 JSON형식으로 리턴.. HTML5 경우 data-로 저장한경우엔 key를 이용하여 data를 읽어옴
+		//attr("readonly", "readonly"); 선택한 요소에 속성을 추가, displayTime로 변환된 요소에 readonly 속성을 추가하고 속성의 값은 readonly로 추가
+		//.data("rno", reply.rno); rno에 get 함수의 json 데이터 콜백데이터인 reply.rno을 밸류값으로 가져와서 data "rno" 키값에 저장한다.
+		$(".chat").on("click", "li", function(e){
+			
+			var rno = $(this).data("rno");
+
+			replyService.get(rno, function(reply){
+
+				modalInputReply.val(reply.reply);
+				modalInputReplyer.val(reply.replyer);
+				modalInputReplyDate.val(replyService.displayTime(reply.replyDate)).attr("readonly", "readonly");
+				modal.data("rno", reply.rno);
+
+				modal.find("button[id !='modalCloseBtn']").hide();
+				modalModBtn.show();
+				modalRemoveBtn.show();
+
+				$(".modal").modal("show");
+				
+				});
+			console.log(rno);
+			});
+		
+		modalModBtn.on("click", function(e){
+			var reply = {rno:modal.data("rno"), reply: modalInputReply.val()};
+
+			replyService.update(reply, function(result){
+
+				alert(result);
+				modal.modal("hide");
+				showList(1);
+				});
+
+			});
+		
+		modalRemoveBtn.on("click", function(e){
+			var rno = modal.data("rno");
+			replyService.remove(rno, function(result){
+
+				alert(result);
+				modal.modal("hide");
+				showList(1);
+				});
+			});
+
+		modalCloseBtn.on("click", function(e){
+			modal.modal("hide");
+			showList(1);
 			});
 /* 	replyService.getList( 
 		{bno:bnoValue, page:1} //function getList('param', callback, error)에서 param값의 해당하는 부분

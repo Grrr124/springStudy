@@ -19,7 +19,7 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 public class ReplyMapperTests {
 	
-	private Long[] bnoArr = { 3145745L, 3145744L, 3145743L, 3145742L, 3145741L };
+	private Long[] bnoArr = { 3145745L, 3145744L, 3145743L, 3145742L, 3145741L, 11L };
 	
 	@Setter(onMethod_ = @Autowired)
 	private ReplyMapper mapper;
@@ -73,13 +73,23 @@ public class ReplyMapperTests {
 //		log.info("UPDATE COUNT : " + count);
 //	}
 	
+//	@Test
+//	public void testList() {
+//		
+//		Criteria cri = new Criteria();
+//		
+//		//3145745L
+//		List<ReplyVO> replies = mapper.getListWithPaging(cri, bnoArr[0]);
+//		replies.forEach(reply -> log.info(reply));
+//	}
+	
 	@Test
-	public void testList() {
+	public void testList2() {
 		
-		Criteria cri = new Criteria();
+		Criteria cri = new Criteria(2, 10);
 		
-		//3145745L
-		List<ReplyVO> replies = mapper.getListWithPaging(cri, bnoArr[0]);
+		List<ReplyVO> replies = mapper.getListWithPaging(cri, 11L);
+		
 		replies.forEach(reply -> log.info(reply));
 	}
 	
