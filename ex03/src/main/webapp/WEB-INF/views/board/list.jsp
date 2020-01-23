@@ -175,7 +175,6 @@ $(document).ready(function(){
 	$("#regBtn").on("click", function(){
 
 		self.location = "/board/register";
-
 		});
 
 	var actionForm = $("#actionForm");

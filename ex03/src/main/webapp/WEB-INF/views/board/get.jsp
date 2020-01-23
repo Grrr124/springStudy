@@ -99,6 +99,9 @@
        							</li>
        						</ul>
        					</div>
+       					<div class="panel-footer">
+       					
+       					</div>
          			</div>
        			</div>
        		</div>
@@ -152,13 +155,25 @@ $(document).ready(function(){
 	showList(1);
 
 	function showList(page) {
-		replyService.getList({bno:bnoValue, page: page || 1}, function(list) {
 
+		replyService.getList({bno:bnoValue, page: page || 1}, function(replyCnt, list) {
+
+			console.log("replyCnt: " + replyCnt);
+			console.log("list: " + list);
+			console.log(list);
+			console.log("page: " + page);
+			//사용자가 modalRegisterBtn을 이용해 댓글을 추가하면 메서드에 있는 showList(-1)로 다시 호출하여 다시 뿌려주는 방식.
+			//if page가 -1이라면, 다시 전체 댓글의 숫자를 파악하는 pageNum = Math.ceil(replyCnt/10.0); 을 이용해서
+			//showList 파라미터로 리턴시킨다.
+			if(page == -1){
+				pageNum = Math.ceil(replyCnt/10.0);
+				showList(pageNum);
+				return;
+				}
+			
 			var str="";
 			
 		 	if(list == null || list.length == 0) {
-				replyUL.html("");
-
 				return;
 			 	}
 		 	//.rno을 쓸수 있는 이유는 
@@ -171,7 +186,8 @@ $(document).ready(function(){
 				}
 
 			replyUL.html(str)
-			
+			console.log(bnoValue);
+			showReplyPage(replyCnt);
 			}); //end function
 		}	//end showList 
 
@@ -214,7 +230,8 @@ $(document).ready(function(){
 			//modal창을 닫고 showList로 다시 리스트를 뿌려준다.
 				modal.find("input").val("");
 				modal.modal("hide");
-				showList(1);
+				//showList(1);
+				showList(-1);
 				});
 			}); //end modalRegisterBtn
 
@@ -251,7 +268,7 @@ $(document).ready(function(){
 
 				alert(result);
 				modal.modal("hide");
-				showList(1);
+				showList(pageNum);
 				});
 
 			});
@@ -262,13 +279,72 @@ $(document).ready(function(){
 
 				alert(result);
 				modal.modal("hide");
-				showList(1);
+				showList(pageNum);
 				});
 			});
 
 		modalCloseBtn.on("click", function(e){
 			modal.modal("hide");
-			showList(1);
+			showList(pageNum);
+			});
+
+
+		//댓글 페이지
+		var pageNum = 1;
+		var replyPageFooter = $(".panel-footer");
+
+		function showReplyPage(replyCnt) {
+
+			var endNum = Math.ceil(pageNum / 10.0) * 10;
+			var startNum = endNum - 9;
+
+			var prev = startNum != 1;
+			var next = false;
+
+			if(endNum * 10 >= replyCnt) {
+				endNum = Math.ceil(replyCnt / 10.0);
+				}
+
+			if(endNum * 10 < replyCnt) {
+				next = true;
+				}
+
+			var str = "<ul class='pagination pull-right'>";
+
+			if(prev) {
+				str+="<li class='page-item'><a class='page-link' href='"+(startNum -1)+"'>Previous</a></li>";
+				}
+
+			for(var i = startNum ; i <= endNum; i++){
+
+				var active = pageNum == i? "active":"";
+
+				str+="<li class='page-item "+active+" '><a class='page-link' href='"+i+"'>"+i+"</a></li>";
+				}
+
+			if(next){
+				str+="<li class='page-item'><a class='page-link' href='"+(endNum + 1)+"'>Next</a></li>";
+				}
+
+				str += "</ul></div>"
+
+				console.log(str);
+
+				replyPageFooter.html(str);
+			}
+		//페이지 번호 클릭시 새로운 댓글 가져오기
+		//댓글의 페이지번호는 a태그 내의 존재하므로 a태그 기본동작을 제한하고
+		//댓글 페이지 번호를 변경 후 가져온다.
+		replyPageFooter.on("click", "li a", function(e){
+			e.preventDefault();
+			console.log("page click");
+
+			var targetPageNum = $(this).attr("href");
+
+			console.log("targetPageNum: " + targetPageNum);
+			pageNum = targetPageNum;
+
+			showList(pageNum);
 			});
 /* 	replyService.getList( 
 		{bno:bnoValue, page:1} //function getList('param', callback, error)에서 param값의 해당하는 부분

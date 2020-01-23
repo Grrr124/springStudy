@@ -48,7 +48,8 @@ var replyService = (function(){
 		//jQuery의 getJSON을 통해서 불러온 JSON형태의 URL을 data 함수에 담아서 콜백 시킨다.
 		$.getJSON("/replies/pages/" + bno + "/" + page + ".json", function(data){ 
 			if(callback) {
-				callback(data);
+//				callback(data); //댓글 목록만 가져오는 경우
+				callback(data.replyCnt, data.list); //댓글 숫자와 목록을 가져오는 경우
 			} //end if
 		}).fail(function(xhr, status, err) {
 		if (error) {

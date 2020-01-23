@@ -28,6 +28,7 @@ public class Criteria {
 		
 	}
 	
+	//검색 조건 TWC를 구성한 조건을 배열로 만든다.
 	public String[] getTypeArr() {
 		
 		return type == null? new String[] {}: type.split("");
@@ -37,7 +38,7 @@ public class Criteria {
 	public String getListLink() {
 		
 		UriComponentsBuilder builder = UriComponentsBuilder.fromPath("")
-				.queryParam("pageNum", this.pageNum)
+				.queryParam("pageNum", this.getPageNum())
 				.queryParam("amount", this.getAmount())
 				.queryParam("type", this.getType())
 				.queryParam("keyword", this.getKeyword());
